@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MkBlogs — Curso de publicação multi-plataforma automatizada</title>
+<meta name="description" content="MkBlogs: curso em 6 trilhas para publicar texto e imagem em redes sociais e blogs automaticamente — Postiz self-hosted, APIs (X, LinkedIn, Bluesky, WordPress, Ghost) e construindo do zero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px 1fr;gap:16px;margin-bottom:26px}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🚀</span> MkBlogs</a>
+  <span class="sep">|</span>
+  <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+  <div class="links">
+    <a class="sec" href="#oque">O que é</a>
+    <a class="sec" href="#fluxo">Como funciona</a>
+    <a class="sec" href="#guia">Guia de uso</a>
+    <a class="sec" href="#exemplos">Exemplos</a>
+    <a class="sec" href="#roadmap">Roadmap</a>
+    <button class="tgl" id="themeToggle" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/mkblogs" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Curso · 6 trilhas · INEMA.CLUB</span>
+      <h1>Publicação multi-plataforma <span class="amb">automatizada</span>.</h1>
+      <p class="lead">Aprenda a publicar texto e imagem em redes sociais e blogs automaticamente: configure o Postiz self-hosted, conecte APIs e construa do zero seu próprio sistema multi-plataforma.</p>
+      <div class="cta">
+        <a class="btn" href="#guia">Começar o guia</a>
+        <a class="btn ghost" href="https://github.com/inematds/mkblogs" target="_blank" rel="noopener">Ver no GitHub</a>
+      </div>
+    </div>
+    <figure><pre><span class="c"># abrir o curso localmente (site estático)</span>
+<span class="k">git</span> clone <span class="s">https://github.com/inematds/mkblogs</span>
+<span class="k">cd</span> mkblogs
+<span class="k">npx</span> serve .   <span class="c"># ou abra index.html no navegador</span></pre></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">O que é</span>
+  <h2>Um curso para publicar em escala sem SaaS pago</h2>
+  <p class="sub">Site de curso estático (HTML + Tailwind), organizado em 6 trilhas. Para devs solo, agências, criadores e founders que querem publicar em escala — usando ferramentas open-source ou construindo o próprio sistema.</p>
+  <div class="grid g3">
+    <div class="card"><h3>🚀 Caminho rápido</h3><p>Suba o Postiz self-hosted com Docker e publique em mais de 30 plataformas. O atalho para quem quer resultado sem montar tudo do zero.</p></div>
+    <div class="card"><h3>🚀 Conectar APIs</h3><p>Aprenda a integrar X, LinkedIn, Bluesky, Instagram, WordPress, Ghost, Dev.to e Hashnode — APIs simples, sem aprovação.</p></div>
+    <div class="card"><h3>🚀 Construir do zero</h3><p>Seu próprio mini-Postiz em NestJS + Prisma + BullMQ: providers, fila de publicação e OAuth genérico.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">Como funciona</span>
+  <h2>As 6 trilhas, em ordem</h2>
+  <p class="sub">Comece em Fundamentos, escolha entre usar o Postiz pronto ou construir do zero, e finalize com deploy em produção.</p>
+  <div class="flow">
+    <span>T1 Fundamentos</span><span class="arr">→</span>
+    <span>T2 Postiz Self-Hosted</span><span class="arr">→</span>
+    <span>T3 Conectar Redes</span><span class="arr">→</span>
+    <span>T4 Blogs</span><span class="arr">→</span>
+    <span>T5 Construindo do Zero</span><span class="arr">→</span>
+    <span>T6 Deploy &amp; Produção</span>
+  </div>
+  <div class="grid g3" style="margin-top:26px">
+    <div class="card"><h3>🧭 T1 — Fundamentos</h3><p>O mapa do curso: conceitos de publicação multi-plataforma e por que automatizar.</p></div>
+    <div class="card"><h3>🐳 T2 — Postiz Self-Hosted</h3><p>Subir o Postiz com Docker passo a passo — o caminho mais rápido para publicar.</p></div>
+    <div class="card"><h3>🔑 T3 — Conectar Redes</h3><p>Conectar as contas e autorizar as redes sociais via APIs.</p></div>
+    <div class="card"><h3>📝 T4 — Blogs</h3><p>Publicar em WordPress, Ghost, Dev.to, Hashnode e sites estáticos.</p></div>
+    <div class="card"><h3>🛠️ T5 — Construindo do Zero</h3><p>Seu mini-Postiz em NestJS + Prisma + BullMQ, com fila e OAuth.</p></div>
+    <div class="card"><h3>🚀 T6 — Deploy &amp; Produção</h3><p>Colocar o sistema no ar e operar em produção.</p></div>
+  </div>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Pré-requisitos</span>
+  <h2>O que ter à mão</h2>
+  <p class="sub">O curso é um site estático — basta um navegador. Para as trilhas práticas você usa Docker (Postiz) e Node (construir do zero).</p>
+  <div class="grid g3">
+    <div class="card"><h3>Navegador + Git</h3><p>O conteúdo é HTML estático. Clone o repositório ou apenas abra os arquivos no navegador.</p><pre><span class="c"># clonar e abrir</span>
+<span class="k">git</span> clone <span class="s">https://github.com/inematds/mkblogs</span></pre></div>
+    <div class="card"><h3>Docker (Trilha 2)</h3><p>Necessário para subir o Postiz self-hosted. Tenha Docker e Docker Compose instalados.</p><pre><span class="c"># conferir</span>
+<span class="k">docker</span> -v
+<span class="k">docker</span> compose version</pre></div>
+    <div class="card"><h3>Node.js (Trilha 5)</h3><p>Para construir o mini-Postiz em NestJS + Prisma + BullMQ.</p><pre><span class="c"># conferir</span>
+<span class="k">node</span> -v</pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guia de uso · passo a passo</span>
+  <h2>Como percorrer o curso</h2>
+  <p class="sub">As trilhas ficam em <code>curso/trilha1..6/</code>, cada uma com seu <code>index.html</code> e módulos. Siga a ordem ou pule direto para o caminho que faz sentido pra você.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Abrir o índice do curso</h3>
+    <p>O <code>index.html</code> na raiz lista as 6 trilhas e o público-alvo.</p>
+<pre><span class="k">npx</span> serve .   <span class="c"># sobe o site estático em localhost</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Começar pelos Fundamentos</h3>
+    <p>Entre na Trilha 1 para o mapa e os conceitos antes da prática.</p>
+<pre><span class="k">open</span> <span class="s">curso/trilha1/index.html</span>  <span class="c"># 🧭 Fundamentos</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>Escolher o caminho prático</h3>
+    <p>Postiz pronto (Trilha 2) para resultado rápido, ou construir do zero (Trilha 5) se quiser controlar tudo.</p>
+<pre><span class="k">open</span> <span class="s">curso/trilha2/index.html</span>  <span class="c"># 🐳 Postiz Self-Hosted</span>
+<span class="k">open</span> <span class="s">curso/trilha5/index.html</span>  <span class="c"># 🛠️ Construindo do Zero</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>Conectar redes e blogs</h3>
+    <p>Trilha 3 cobre as redes sociais; Trilha 4, os blogs (WordPress, Ghost, Dev.to, Hashnode).</p>
+<pre><span class="k">open</span> <span class="s">curso/trilha3/index.html</span>  <span class="c"># 🔑 Conectar Redes</span>
+<span class="k">open</span> <span class="s">curso/trilha4/index.html</span>  <span class="c"># 📝 Blogs</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>Subir para produção</h3>
+    <p>Finalize com a Trilha 6 para fazer o deploy e operar.</p>
+<pre><span class="k">open</span> <span class="s">curso/trilha6/index.html</span>  <span class="c"># 🚀 Deploy &amp; Produção</span></pre>
+  </div></div>
+</div></section>
+
+<section id="exemplos"><div class="wrap">
+  <span class="chip">Exemplos</span>
+  <h2>Para quem é este curso</h2>
+  <p class="sub">Quatro perfis que tiram proveito direto do MkBlogs.</p>
+  <div class="grid g2">
+    <div class="card"><h3>🚀 Devs solo</h3><p>Publicar em várias plataformas sem manter um SaaS pago — Postiz pronto ou seu próprio sistema.</p></div>
+    <div class="card"><h3>🚀 Agências</h3><p>Centralizar publicação de múltiplas contas e marcas em redes e blogs, em escala.</p></div>
+    <div class="card"><h3>🚀 Criadores</h3><p>Distribuir o mesmo conteúdo em X, LinkedIn, Bluesky, Instagram e blogs automaticamente.</p></div>
+    <div class="card"><h3>🚀 Founders</h3><p>Montar a distribuição de conteúdo da empresa sem depender de ferramenta fechada.</p></div>
+  </div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>Trajeto sugerido</h2>
+  <p class="sub">Da base ao sistema próprio em produção — siga as trilhas na ordem.</p>
+  <div class="phase"><div class="tag">Início</div><div class="d"><strong>Fundamentos + Postiz</strong><span>Trilhas 1 e 2: entender o conceito e subir o Postiz self-hosted via Docker.</span></div></div>
+  <div class="phase"><div class="tag">Conexões</div><div class="d"><strong>Redes e blogs</strong><span>Trilhas 3 e 4: conectar redes sociais e publicar em WordPress, Ghost, Dev.to e Hashnode.</span></div></div>
+  <div class="phase"><div class="tag">Próprio</div><div class="d"><strong>Construindo do zero</strong><span>Trilha 5: mini-Postiz em NestJS + Prisma + BullMQ com providers, fila e OAuth.</span></div></div>
+  <div class="phase"><div class="tag">Produção</div><div class="d"><strong>Deploy &amp; operação</strong><span>Trilha 6: colocar o sistema no ar e mantê-lo rodando.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">HTML + Tailwind</div><div class="pill">Postiz / Docker</div><div class="pill">NestJS · Prisma · BullMQ</div>
+    <p style="margin-top:18px">MkBlogs · curso de publicação multi-plataforma ·
+      <a href="https://github.com/inematds/mkblogs">github.com/inematds/mkblogs</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='mkblogs-guia-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; }
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      localStorage.setItem(KEY, light?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>
